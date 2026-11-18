@@ -1,0 +1,8 @@
+.env
+acount2.env
+*.env
+*.env
+.env
+acount2.env
+secrets*
+**/*.env

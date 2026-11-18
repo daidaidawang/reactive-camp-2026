@@ -1,0 +1,4 @@
+*.env
+.env
+acount2.env
+secrets*

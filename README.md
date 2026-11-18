@@ -50,7 +50,10 @@ reactive-camp-2026/
 
 ## Day 3 成果速览
 
-- **Lasna 监控合约**：`0x1E3b32cB9F31868212b9938c57d76d3fC2Af12dd`
+- **Lasna 监控合约**：[Reactscan](https://lasna-omni.reactscan.net/address/0x1E3b32cB9F31868212b9938c57d76d3fC2Af12dd)（`0x1E3b32cB9F31868212b9938c57d76d3fC2Af12dd`）
 - **Sepolia 测试代币 CTT**：`0xeD2f9C6Be45d8287515428B5FA60E0f2FcEb2e51`
-- **react() 已触发 2 次**，reactive 交易：`0x43acedd363cca1d8c225f31020697323e575d5d2be9cbc044592d7988939515b`（Lasna 区块 8624019）
-- 订阅条件：CTT 的 Transfer，单笔 ≥ 5 CTT 才计数，上限 3 次自动退订
+- **react() 已触发并完成 3 次命中**：此前的 [Reactive 交易](https://lasna-omni.reactscan.net/tx/0x43acedd363cca1d8c225f31020697323e575d5d2be9cbc044592d7988939515b)（区块 8624019，count=2）；最后一次命中的 [Sepolia 转账](https://sepolia.etherscan.io/tx/0x26037056d061a72af9855112e9dd1c5bff7bbda0f056d8e12ce3ddd3639a3827) → [Reactive 交易](https://lasna-omni.reactscan.net/tx/0x51f23ac799e83c3a90257f904db7a324cd3d2a25dce9013acce0e8006c8050a4)（区块 8642323，count=3）
+- **自动退订已验证**：最终 `_matchedCount = 3`、`_limit = 0`、SYSTEM debt = 0，当前 filter index 中已无 CTT 的 Transfer 订阅。
+- **订阅条件**：监控 Sepolia 上 CTT 的 `Transfer`；只统计单笔 ≥ 5 CTT 的转账，命中 3 次后自动退订。
+- **部署交易**：[Reactscan](https://lasna-omni.reactscan.net/tx/0x12154d80c18dd2e2b809cd2fea45b69f270b2060b246744df9e3ee51a8ab393e)
+

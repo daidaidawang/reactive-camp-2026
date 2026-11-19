@@ -9,7 +9,9 @@ Reactive Omni 学习和实验记录。合约代码在 `reactive-monitor/`，每�
 - `notes/2026-11-16.md`：Reactive Network 基础
 - `notes/2026-11-17.md`：源链、目标链和费用
 - `notes/2026-11-18.md`：监听 Sepolia 上的 ERC-20 Transfer
+- `notes/2026-11-19.md`：AgentSentinel 跨链回调处置
 - `reactive-monitor/`：Foundry 合约和部署文件
+- `agentsentinel/`：AgentSentinel 合约和判读服务
 
 ## 网络参数
 
@@ -27,4 +29,5 @@ Lasna SYSTEM：`0x8888888888888888888888888888888888888888`
 最后一次命中的 [Sepolia 转账](https://sepolia.etherscan.io/tx/0x26037056d061a72af9855112e9dd1c5bff7bbda0f056d8e12ce3ddd3639a3827) 对应 [Lasna `react()` 交易](https://lasna-omni.reactscan.net/tx/0x51f23ac799e83c3a90257f904db7a324cd3d2a25dce9013acce0e8006c8050a4)。最终计数为 3，剩余次数为 0，订阅已移除。部署和费用处理过程见 [Day 3 笔记](notes/2026-11-18.md)。
 
 私钥和 RPC 凭证放在本地 `.env` 文件中，不提交到仓库。
+
 

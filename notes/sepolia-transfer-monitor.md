@@ -40,3 +40,6 @@
 - 过滤事件用 `return`，不要用 `revert`。
 - 有 debt 时用 SYSTEM `depositTo(address)` 恢复合约；直接给合约转账不会自动还债。
 
+记录日期：2026-11-18
+
+

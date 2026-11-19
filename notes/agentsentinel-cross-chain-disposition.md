@@ -37,3 +37,6 @@
 - callback 投递失败时，代理交易可能仍成功并发出失败事件；需要检查代理事件中的目标调用数据。
 - Lasna 执行费使用 lREACT，Sepolia callback 使用 Sepolia ETH。部署和运行前分别检查余额与欠费。
 
+记录日期：2026-11-19
+
+

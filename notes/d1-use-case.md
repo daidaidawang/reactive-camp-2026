@@ -30,3 +30,6 @@ Reactive 可以根据订阅事件自动调用 Lasna 上的 `react()`，并通过
 
 ![AgentSentinel 源链、Reactive 和目标链流程图](assets/d1-agent-sentinel-flow.png)
 
+记录日期：2026-11-19
+
+

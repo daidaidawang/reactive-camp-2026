@@ -19,9 +19,9 @@ Reactive 订阅源链事件后，会把日志交给 Lasna 上的 `AgentSentinel.
 | 环节 | 交易 |
 |---|---|
 | Sepolia 源链事件：`RiskAlert`，60 ETH 请求高于 10 ETH 上限 | [查看交易](https://sepolia.etherscan.io/tx/0xb80aa0ef41421f14ce818a44f05afbbb7881c54a8619b2eda74e6b84ce993666) |
-| Lasna Reactive：`react()` 记录越额并发起 Callback | [查看交易](https://lasna-omni.reactscan.net/tx/0xdfced36065c24b9c1b810703c74e893295be6ee3aa0b24955bc98e82bf6a6717) |
+| Lasna Reactive：`react()` 记录越额并发起 Callback | [查看交易](https://lasna.reactscan.net/tx/0xdfced36065c24b9c1b810703c74e893295be6ee3aa0b24955bc98e82bf6a6717) |
 | Sepolia 目标链：Callback Proxy 调用处置合约 | [查看交易](https://sepolia.etherscan.io/tx/0x1a516f8f5cc18935be4c89731e77946754621797f02c5c45a5fc89cd4be4efeb) |
-| 测试后恢复 AI 模式 | [查看交易](https://lasna-omni.reactscan.net/tx/0xaa19dbff8a2d39b78ae00967b737e943c370fc13140795fea3f29f1618a8a214) |
+| 测试后恢复 AI 模式 | [查看交易](https://lasna.reactscan.net/tx/0xaa19dbff8a2d39b78ae00967b737e943c370fc13140795fea3f29f1618a8a214) |
 
 链上结果：Agent 状态为 `Revoked`，`trade.v3` 已撤销，测试质押余额为 0。
 

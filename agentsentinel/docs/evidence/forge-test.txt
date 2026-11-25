@@ -7,7 +7,7 @@ Ran 6 tests for test/BoundedCron.t.sol:BoundedCronTest
 [PASS] testOnlySystemCanDeliverCronAndOnlyProxyCanDeliverCallback() (gas: 23971)
 [PASS] testOwnerCanStopBeforeLimit() (gas: 347079)
 [PASS] testWrongCronSourceAndTopicAreIgnoredWithoutRevert() (gas: 27997)
-Suite result: ok. 6 passed; 0 failed; 0 skipped; finished in 1.47ms (3.71ms CPU time)
+Suite result: ok. 6 passed; 0 failed; 0 skipped; finished in 3.71ms (2.64ms CPU time)
 
 Ran 28 tests for test/AgentSentinel.t.sol:AgentSentinelTest
 [PASS] testAiCannotDowngradeAndTimeoutFallbackWorks() (gas: 703653)
@@ -21,8 +21,8 @@ Ran 28 tests for test/AgentSentinel.t.sol:AgentSentinelTest
 [PASS] testEmptyBudgetStopsAndFundingResumesBelowTotalLimit() (gas: 1422117)
 [PASS] testEndToEndFromActualEventAndMerchantPayment() (gas: 908597)
 [PASS] testExpiryBoundaryAndZeroOrder() (gas: 87315)
-[PASS] testFuzzOrderBoundaryAndAccounting(uint256) (runs: 256, μ: 237668, ~: 228638)
-[PASS] testFuzzSequenceConservesEscrowAndBonds(uint8[24]) (runs: 256, μ: 783296, ~: 740710)
+[PASS] testFuzzOrderBoundaryAndAccounting(uint256) (runs: 256, μ: 237391, ~: 228918)
+[PASS] testFuzzSequenceConservesEscrowAndBonds(uint8[24]) (runs: 256, μ: 785487, ~: 731386)
 [PASS] testInsufficientBudgetRollsBackReceipt() (gas: 187044)
 [PASS] testManualRevocationDoesNotBreakCallback() (gas: 699817)
 [PASS] testNormalOrderAtSingleLimitSucceeds() (gas: 223379)
@@ -38,6 +38,6 @@ Ran 28 tests for test/AgentSentinel.t.sol:AgentSentinelTest
 [PASS] testUntrustedReactionRejected() (gas: 14811)
 [PASS] testWithdrawBeforeRequestCannotEvadeBond() (gas: 48291)
 [PASS] testWrongOriginAndMalformedLogsIgnored() (gas: 41905)
-Suite result: ok. 28 passed; 0 failed; 0 skipped; finished in 97.53ms (141.55ms CPU time)
+Suite result: ok. 28 passed; 0 failed; 0 skipped; finished in 89.20ms (128.45ms CPU time)
 
-Ran 2 test suites in 99.42ms (99.00ms CPU time): 34 tests passed, 0 failed, 0 skipped (34 total tests)
+Ran 2 test suites in 91.07ms (92.91ms CPU time): 34 tests passed, 0 failed, 0 skipped (34 total tests)

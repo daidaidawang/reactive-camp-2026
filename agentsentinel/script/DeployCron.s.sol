@@ -22,10 +22,15 @@ contract DeployBoundedCronReactive is Script {
 }
 
 contract DeployBoundedCronCallback is Script {
+    address internal constant SEPOLIA_CALLBACK_PROXY = 0xAa14d9Cd0f788Ca23d11805986C1d8bd035D23b4;
+
     function run() external {
         uint256 destinationChainId = vm.envUint("CRON_DESTINATION_CHAIN_ID");
         require(block.chainid == destinationChainId, "wrong destination chain");
+        require(destinationChainId == 11155111, "only Sepolia is configured");
         address proxy = vm.envAddress("CRON_CALLBACK_PROXY_ADDR");
+        require(proxy == SEPOLIA_CALLBACK_PROXY, "wrong Sepolia callback proxy");
+        require(proxy.code.length > 0, "callback proxy has no code");
         address reactive = vm.envAddress("CRON_REACTIVE_ADDR");
         uint256 maxRuns = vm.envUint("CRON_MAX_RUNS");
         uint256 funding = vm.envUint("CRON_CALLBACK_FUNDING_WEI");

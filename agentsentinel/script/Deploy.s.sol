@@ -47,11 +47,15 @@ contract DeployReactive is Script {
 }
 
 contract DeployCallback is Script {
+    address internal constant SEPOLIA_CALLBACK_PROXY = 0xAa14d9Cd0f788Ca23d11805986C1d8bd035D23b4;
+
     function run() external {
         require(block.chainid == 11155111, "expected Sepolia");
         address sentinel = vm.envAddress("SENTINEL_ADDR");
         SentinelExecutor executor = SentinelExecutor(vm.envAddress("EXECUTOR_ADDR"));
         IPayable proxy = IPayable(payable(vm.envAddress("CALLBACK_PROXY_ADDR")));
+        require(address(proxy) == SEPOLIA_CALLBACK_PROXY, "wrong Sepolia callback proxy");
+        require(address(proxy).code.length > 0, "callback proxy has no code");
         uint256 funding = vm.envUint("CALLBACK_FUNDING_WEI");
         require(executor.resolver() == address(0), "already wired");
         vm.startBroadcast();

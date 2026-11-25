@@ -52,7 +52,7 @@ sequenceDiagram
 
 累计金额按已经分配给商户的 ETH 计数，领取、充值和重新授权不重置；达到总上限后不能靠充值继续花费。总限额从部署参数 `TOTAL_SPEND_LIMIT_WEI` 读取，单位 wei。
 
-提交材料：[测试代码](test/AgentSentinel.t.sol)、[forge test 通过截图](docs/evidence/forge-test.jpg)、[完整输出](docs/evidence/forge-test.txt)。本地运行结果为 28 passed、0 failed；系统和代理使用测试替身，未广播实网交易。
+提交材料：[测试代码](test/AgentSentinel.t.sol)、[forge test 截图](docs/evidence/forge-test.jpg)、[测试输出](docs/evidence/forge-test.txt)。当前运行结果为 Foundry 34 passed、0 failed（AgentSentinel 28 项、Bounded Cron 6 项），Node.js 12 passed、0 failed；系统和代理使用测试替身，未广播实网交易。现有截图只覆盖 AgentSentinel 主套件，完整 34 项以全套最新输出为准。
 
 需要 Foundry 和 Node.js 22+，不需要 npm 安装。编译器固定为 Solidity 0.8.35，EVM 目标为 Cancun。
 
@@ -100,6 +100,8 @@ node scripts/ai-verdict.js --submit
 ## 部署和演示
 
 新版本改变了构造参数和状态布局，不能复用旧部署。按 [部署与演示](docs/部署与演示.md) 分别部署源链、Reactive 合约和回调，再连接角色。这里只提供可检查脚本，不默认广播。
+
+黑客松材料：[提交包清单](docs/黑客松提交材料.md)、[Demo Day 幻灯片](docs/demo-day-slides.md)。新版尚未部署，地址、三笔链上交易和演示视频需要实际演示后补齐。
 
 ## 出问题怎么办
 

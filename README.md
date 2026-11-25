@@ -1,6 +1,6 @@
 # Reactive Builder Camp 2026
 
-Reactive Omni 学习和实验记录。合约代码在 `reactive-monitor/`，每日笔记在 `notes/`。
+Reactive Omni 学习和实验仓库。AgentSentinel 当前原型在 `agentsentinel/`，早期 Transfer 监控实验在 `reactive-monitor/`，任务笔记在 `notes/`。
 
 课程：[Reactive Builder Camp](https://web3career.build/zh/programs/reactive-builder-camp)
 
@@ -17,6 +17,8 @@ Reactive Omni 学习和实验记录。合约代码在 `reactive-monitor/`，每�
 - `reactive-monitor/`：Foundry 合约和部署文件
 - `agentsentinel/`：AgentSentinel 合约和判读服务
 - `agentsentinel/README.md`：AgentSentinel 的能力边界、部署授权顺序和链下服务配置
+- `notes/提交包：可以直接交给黑客松的材料.md`：提交清单与证据状态
+- `notes/Demo Day 展示.md`：三分钟演示方案
 
 ## 网络参数
 
@@ -34,6 +36,12 @@ Lasna SYSTEM：`0x8888888888888888888888888888888888888888`
 最后一次命中的 [Sepolia 转账](https://sepolia.etherscan.io/tx/0x26037056d061a72af9855112e9dd1c5bff7bbda0f056d8e12ce3ddd3639a3827) 对应 [Lasna `react()` 交易](https://lasna.reactscan.net/tx/0x51f23ac799e83c3a90257f904db7a324cd3d2a25dce9013acce0e8006c8050a4)。最终计数为 3，剩余次数为 0，订阅已移除。部署和费用处理过程见 [Transfer 监控笔记](notes/sepolia-transfer-monitor.md)。
 
 私钥和 RPC 凭证放在本地 `.env` 文件中，不提交到仓库。
+
+## 黑客松交付
+
+- [提交包：可以直接交给黑客松的材料](notes/提交包：可以直接交给黑客松的材料.md)
+- [Demo Day 展示](notes/Demo%20Day%20展示.md)
+- [AgentSentinel 演示幻灯片](agentsentinel/docs/demo-day-slides.md)
 
 
 

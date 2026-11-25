@@ -4,7 +4,12 @@ pragma solidity ^0.8.29;
 /// @title AgentRegistry — AI 智能体身份注册表（Base/Sepolia 侧）
 /// @notice 被守护对象的身份与运行状态。状态是守护管线处置的载体之一。
 contract AgentRegistry {
-    enum Status { None, Active, Suspended, Revoked }
+    enum Status {
+        None,
+        Active,
+        Suspended,
+        Revoked
+    }
 
     struct Agent {
         string did;
@@ -18,7 +23,7 @@ contract AgentRegistry {
     mapping(address => Agent) public agents;
 
     event AgentRegistered(address indexed agent, string did);
-    event AgentStatusChanged(address indexed agent, Status indexed status, uint256 at, string reason);
+    event AgentStatusChanged(address indexed agent, Status indexed status, uint256 timestamp, string reason);
     event OperatorSet(address indexed operator);
 
     error NotOwner(address caller);
@@ -52,8 +57,10 @@ contract AgentRegistry {
     }
 
     function registerAgent(address agent_, string calldata did_) external onlyOwner {
+        require(agent_ != address(0) && bytes(did_).length > 0, "invalid identity");
         require(agents[agent_].status == Status.None, "already registered");
-        agents[agent_] = Agent({ did: did_, status: Status.Active, registeredAt: block.timestamp, lastChangedAt: block.timestamp });
+        agents[agent_] =
+            Agent({did: did_, status: Status.Active, registeredAt: block.timestamp, lastChangedAt: block.timestamp});
         emit AgentRegistered(agent_, did_);
     }
 
@@ -63,6 +70,8 @@ contract AgentRegistry {
         onlyOwnerOrOperator
         registered(agent_)
     {
+        require(status_ != Status.None, "cannot erase registration");
+        require(agents[agent_].status != Status.Revoked || status_ == Status.Revoked, "revocation is terminal");
         agents[agent_].status = status_;
         agents[agent_].lastChangedAt = block.timestamp;
         emit AgentStatusChanged(agent_, status_, block.timestamp, reason_);

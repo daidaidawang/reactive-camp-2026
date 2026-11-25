@@ -1,20 +1,35 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.29;
 
-import { AgentRegistry } from "./AgentRegistry.sol";
-import { CapabilityRegistry } from "./CapabilityRegistry.sol";
+import {AgentRegistry} from "./AgentRegistry.sol";
+import {CapabilityRegistry} from "./CapabilityRegistry.sol";
+import {AccountabilityVault} from "./AccountabilityVault.sol";
 
-/// @title SentinelExecutor — Agent 敏感操作的唯一入口 + 回执锚定
-/// @notice 回应评委追问②③：
-///  ② 「违规操作能否绕过回执」——下单唯一入口是本合约，回执由合约计算
-///     requestedAmount 与 allowance 的对比结果，不是 Agent 自报；
-///  ③ 「跨链回调前还能否继续操作」——窗口期内每次操作都留回执
-///     （事后可追罚保证金），撤权落地后本合约立刻拒绝。
+/// @notice Sponsor-funded ETH orders to one fixed merchant. Only this escrow is protected.
 contract SentinelExecutor {
     AgentRegistry public immutable agentRegistry;
     CapabilityRegistry public immutable capabilityRegistry;
-
+    AccountabilityVault public immutable vault;
+    address public immutable owner = msg.sender;
+    address payable public immutable merchant;
+    uint256 public immutable minimumBond;
+    uint256 public immutable totalSpendLimit;
+    uint256 public totalSpent;
+    address public resolver;
+    uint256 public availableBudget;
+    uint256 public merchantCredit;
     uint256 public receiptSeq;
+    mapping(address => uint256) public pendingReceipt;
+
+    struct Receipt {
+        address agent;
+        bytes32 capId;
+        uint256 amount;
+        uint256 maxSpend;
+        bool overLimit;
+        bool settled;
+    }
+    mapping(uint256 => Receipt) public receipts;
 
     event ActionReceipt(
         uint256 indexed receiptId,
@@ -23,43 +38,102 @@ contract SentinelExecutor {
         uint256 amount,
         uint256 maxSpend,
         bool overLimit,
-        uint256 at
+        uint256 timestamp
     );
-    /// @notice 财务越界风险证据。topic1=receiptId topic2=agent topic3=capId，
-    ///         非索引 data=(amount, maxSpend)——证据由合约算出上链。
-    event RiskAlert(uint256 indexed receiptId, address indexed agent, bytes32 indexed capId, uint256 amount, uint256 maxSpend);
+    event RiskAlert(
+        uint256 indexed receiptId, address indexed agent, bytes32 indexed capId, uint256 amount, uint256 maxSpend
+    );
+    event OrderAccepted(uint256 indexed receiptId, address indexed merchant, uint256 amount);
+    event OrderBlocked(uint256 indexed receiptId);
+    event BudgetFunded(uint256 amount);
+    event BudgetWithdrawn(address indexed recipient, uint256 amount);
+    event MerchantPaid(uint256 amount);
+    event ReceiptSettled(uint256 indexed receiptId);
 
-    error AgentNotActive(address agent);
-    error CapabilityNotActive(bytes32 capId);
-    error WindowExpired(uint256 validUntil, uint256 nowTs);
-
-    constructor(address agentRegistry_, address capabilityRegistry_) {
-        agentRegistry = AgentRegistry(agentRegistry_);
-        capabilityRegistry = CapabilityRegistry(capabilityRegistry_);
+    constructor(
+        address registry_,
+        address capabilities_,
+        address vault_,
+        address payable merchant_,
+        uint256 minimumBond_,
+        uint256 totalSpendLimit_
+    ) {
+        require(
+            registry_.code.length > 0 && capabilities_.code.length > 0 && vault_.code.length > 0, "invalid dependency"
+        );
+        require(merchant_ != address(0) && minimumBond_ > 0 && totalSpendLimit_ > 0, "invalid policy");
+        agentRegistry = AgentRegistry(registry_);
+        capabilityRegistry = CapabilityRegistry(capabilities_);
+        vault = AccountabilityVault(vault_);
+        merchant = merchant_;
+        minimumBond = minimumBond_;
+        totalSpendLimit = totalSpendLimit_;
     }
 
-    /// @notice Agent 执行一次敏感操作（demo 语义：一笔订单）。
-    ///         msg.sender 必须是被注册且 Active 的 Agent。
-    function executeOrder(bytes32 capId_, uint256 amount_) external returns (uint256 receiptId_) {
-        // ① 身份检查：被注册且处于 Active（Suspended/Revoked 即拒）
-        if (!agentRegistry.isActive(msg.sender)) revert AgentNotActive(msg.sender);
+    function setResolver(address value) external {
+        require(msg.sender == owner && resolver == address(0) && value.code.length > 0, "invalid resolver");
+        resolver = value;
+    }
 
-        // ② 授权边界检查：能力激活且在有效期内（block.timestamp）
-        (uint256 maxSpend, uint256 validUntil,, bool capActive) = capabilityRegistry.getCapability(msg.sender, capId_);
-        if (!capActive) revert CapabilityNotActive(capId_);
-        if (block.timestamp > validUntil) revert WindowExpired(validUntil, block.timestamp);
+    function fund() external payable {
+        require(msg.sender == owner && msg.value > 0, "invalid funding");
+        availableBudget += msg.value;
+        emit BudgetFunded(msg.value);
+    }
 
-        // ③ 回执锚定：超额与否由合约判定并写入回执（不可由 Agent 自报）
-        bool overLimit = amount_ > maxSpend;
-        receiptId_ = ++receiptSeq;
-
-        emit ActionReceipt(receiptId_, msg.sender, capId_, amount_, maxSpend, overLimit, block.timestamp);
-
-        // ④ 财务越界 → 发出结构化风险证据事件（Reactive 网络订阅的就是它）
+    function executeOrder(bytes32 capId, uint256 amount) external returns (uint256 id) {
+        require(resolver != address(0) && vault.executor() == address(this) && vault.slasher() == resolver, "not wired");
+        require(agentRegistry.isActive(msg.sender), "agent not active");
+        require(pendingReceipt[msg.sender] == 0, "pending disposition");
+        require(vault.stakes(msg.sender) >= minimumBond, "insufficient bond");
+        (uint256 maxSpend, uint256 validUntil,, bool active) = capabilityRegistry.getCapability(msg.sender, capId);
+        require(active && block.timestamp < validUntil, "inactive or expired capability");
+        require(amount > 0, "zero amount");
+        bool overLimit = amount > maxSpend;
+        id = ++receiptSeq;
+        receipts[id] = Receipt(msg.sender, capId, amount, maxSpend, overLimit, false);
+        emit ActionReceipt(id, msg.sender, capId, amount, maxSpend, overLimit, block.timestamp);
         if (overLimit) {
-            emit RiskAlert(receiptId_, msg.sender, capId_, amount_, maxSpend);
+            pendingReceipt[msg.sender] = id;
+            vault.lock(msg.sender);
+            emit OrderBlocked(id);
+            emit RiskAlert(id, msg.sender, capId, amount, maxSpend);
+        } else {
+            require(availableBudget >= amount, "insufficient budget");
+            // Lifetime limit across all agents/capabilities. Funding and claims never reset it.
+            require(amount <= totalSpendLimit - totalSpent, "total spend limit exceeded");
+            totalSpent += amount;
+            availableBudget -= amount;
+            merchantCredit += amount;
+            emit OrderAccepted(id, merchant, amount);
         }
-        // 注意：超额不 revert——操作已留痕，走「事后跨链处置+罚没」路线，
-        // 这正是「窗口期操作可追责」的语义。
+    }
+
+    function withdrawBudget(address payable recipient, uint256 amount) external {
+        require(msg.sender == owner && recipient != address(0), "invalid budget withdrawal");
+        require(amount > 0 && amount <= availableBudget, "insufficient available budget");
+        availableBudget -= amount;
+        (bool ok,) = recipient.call{value: amount}("");
+        require(ok, "budget withdrawal failed");
+        emit BudgetWithdrawn(recipient, amount);
+    }
+
+    function settle(uint256 id) external {
+        require(msg.sender == resolver, "not resolver");
+        Receipt storage r = receipts[id];
+        require(r.overLimit && !r.settled && pendingReceipt[r.agent] == id, "invalid receipt");
+        r.settled = true;
+        pendingReceipt[r.agent] = 0;
+        emit ReceiptSettled(id);
+    }
+
+    function claimPayment() external {
+        require(msg.sender == merchant, "not merchant");
+        uint256 amount = merchantCredit;
+        require(amount > 0, "nothing to claim");
+        merchantCredit = 0;
+        (bool ok,) = merchant.call{value: amount}("");
+        require(ok, "payment failed");
+        emit MerchantPaid(amount);
     }
 }

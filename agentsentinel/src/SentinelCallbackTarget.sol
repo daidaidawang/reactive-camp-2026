@@ -1,64 +1,54 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.29;
 
-import { IPayable } from "@reactive/src/interfaces/IPayable.sol";
-import { AbstractCallback } from "@reactive/src/base/AbstractCallback.sol";
-import { AgentRegistry } from "./AgentRegistry.sol";
-import { CapabilityRegistry } from "./CapabilityRegistry.sol";
-import { AccountabilityVault } from "./AccountabilityVault.sol";
+import {IPayable} from "@reactive/src/interfaces/IPayable.sol";
+import {AbstractCallback} from "@reactive/src/base/AbstractCallback.sol";
+import {AgentRegistry} from "./AgentRegistry.sol";
+import {CapabilityRegistry} from "./CapabilityRegistry.sol";
+import {AccountabilityVault} from "./AccountabilityVault.sol";
+import {SentinelExecutor} from "./SentinelExecutor.sol";
 
-/// @title SentinelCallbackTarget — Reactive 跨链回调的处置落点（Sepolia 侧）
-/// @notice 继承 AbstractCallback：双重闸门（onlyServiceProvider + onlyCallbackSender）
-///         保证回调确实来自我们部署的 Sentinel。回调费由本合约以 Sepolia ETH 支付。
+/// @notice Authenticate both proxy and reactive sender, then verify source-local evidence.
 contract SentinelCallbackTarget is AbstractCallback {
     AgentRegistry public immutable agentRegistry;
     CapabilityRegistry public immutable capabilityRegistry;
     AccountabilityVault public immutable vault;
+    SentinelExecutor public immutable executor;
+    mapping(uint256 => bool) public processed;
+    event DispositionExecuted(
+        uint256 indexed receiptId, address indexed agent, bytes32 indexed capId, uint256 level, string action
+    );
+    event DuplicateIgnored(uint256 indexed receiptId);
 
-    event DispositionExecuted(uint256 indexed receiptId, address indexed agent, bytes32 indexed capId, uint256 level, string action);
-    event CronHandled(address indexed sender, uint256 tick);
-
-    constructor(
-        IPayable callbackProxy_,
-        address callbackSender_,
-        address agentRegistry_,
-        address capabilityRegistry_,
-        address vault_
-    ) payable AbstractCallback(callbackProxy_, callbackSender_) {
-        agentRegistry = AgentRegistry(agentRegistry_);
-        capabilityRegistry = CapabilityRegistry(capabilityRegistry_);
-        vault = AccountabilityVault(vault_);
+    constructor(IPayable proxy_, address sender_, address executor_) payable AbstractCallback(proxy_, sender_) {
+        require(
+            address(proxy_).code.length > 0 && sender_ != address(0) && executor_.code.length > 0,
+            "invalid configuration"
+        );
+        executor = SentinelExecutor(executor_);
+        agentRegistry = executor.agentRegistry();
+        capabilityRegistry = executor.capabilityRegistry();
+        vault = executor.vault();
     }
 
-    /// @notice Sentinel 的跨链处置入口。
-    ///         第一个参数会被回调代理覆写为发起回调的 Reactive 合约地址。
     function onSentinelVerdict(address reactive_, address agent_, bytes32 capId_, uint256 receiptId_, uint256 level_)
         external
         onlyServiceProvider
         onlyCallbackSender(reactive_)
     {
-        if (level_ >= 3) {
-            // L3 终止：撤权 + 罚没 + 身份吊销，不可逆
-            capabilityRegistry.revokeCapability(agent_, capId_, "L3: overspend revoked by Sentinel");
-            vault.slash(agent_, "L3: stake forfeited for overspend");
-            agentRegistry.setStatus(agent_, AgentRegistry.Status.Revoked, "L3: agent terminated");
-            emit DispositionExecuted(receiptId_, agent_, capId_, level_, "revoke+slash+revokeIdentity");
-        } else if (level_ == 2) {
-            // L2 冻结：只降级身份，不动保证金（可恢复）
-            agentRegistry.setStatus(agent_, AgentRegistry.Status.Suspended, "L2: suspended by Sentinel");
-            emit DispositionExecuted(receiptId_, agent_, capId_, level_, "suspend");
-        } else {
-            // L0/L1：只留处置记录，不动权限（过罚相当）
-            emit DispositionExecuted(receiptId_, agent_, capId_, level_, "log-only");
+        require(level_ == 3, "unsupported disposition");
+        (address agent, bytes32 capId, uint256 amount, uint256 maxSpend, bool overLimit,) =
+            executor.receipts(receiptId_);
+        require(agent == agent_ && capId == capId_ && overLimit && amount > maxSpend, "evidence mismatch");
+        if (processed[receiptId_]) {
+            emit DuplicateIgnored(receiptId_);
+            return;
         }
-    }
-
-    /// @notice Cron 定时任务回调：证明「到期自动执行」链路（场景 5 辅助演示）。
-    function cronCallback(address reactive_, uint256 tick_)
-        external
-        onlyServiceProvider
-        onlyCallbackSender(reactive_)
-    {
-        emit CronHandled(reactive_, tick_);
+        processed[receiptId_] = true;
+        capabilityRegistry.revokeCapability(agent, capId, "L3: blocked overspend request");
+        vault.slash(agent, "L3: fixed-policy bond forfeiture");
+        agentRegistry.setStatus(agent, AgentRegistry.Status.Revoked, "L3: agent revoked");
+        executor.settle(receiptId_);
+        emit DispositionExecuted(receiptId_, agent, capId, 3, "revoke+slash+revokeIdentity");
     }
 }

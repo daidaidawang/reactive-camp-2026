@@ -2,10 +2,7 @@
 .env
 **/*.env
 secrets*
-lib/
+.state/
 out/
 cache/
 broadcast/
-.env
-*.env
-secrets*

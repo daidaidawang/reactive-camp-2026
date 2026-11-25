@@ -10,8 +10,10 @@ Reactive Omni 学习和实验记录。合约代码在 `reactive-monitor/`，每�
 - `notes/reactive-fees.md`：源链、目标链和费用
 - `notes/sepolia-transfer-monitor.md`：监听 Sepolia 上的 ERC-20 Transfer
 - `notes/agentsentinel-cross-chain-disposition.md`：AgentSentinel 跨链回调处置
+- `notes/agentsentinel-rule-mode-e2e.md`：AgentSentinel 规则模式下的完整链路
 - `reactive-monitor/`：Foundry 合约和部署文件
 - `agentsentinel/`：AgentSentinel 合约和判读服务
+- `agentsentinel/README.md`：AgentSentinel 的能力边界、部署授权顺序和链下服务配置
 
 ## 网络参数
 

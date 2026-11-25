@@ -114,3 +114,13 @@ Executor 的可用预算不足时自动拒绝付款，交易回滚，不产生�
 单链单商户场景可以用普通合约一次完成撤权，Reactive 并不是这一场景的必要条件。保留 Reactive 是为了验证独立事件驱动处置链路；多链权限同步目前只是后续假设。项目价值、替代方案和答辩边界见 [项目论证](docs/项目论证.md)。
 
 本版移除了无业务结果的 Cron 心跳及没有完整策略支持的 L0/L1/L2 处置入口。到期授权在下一次操作时被拒绝，不宣称到期时自动运行交易。
+
+## 定时任务实验
+
+`BoundedCronReactive` 是独立的 Cron100 练习，不属于 AgentSentinel 资金处置路径。Reactive 合约只接受 Lasna 的 Cron100 日志，每次最多请求一次目标链回调；部署时固定 `CRON_MAX_RUNS`，达到上限自动退订，也可由 owner 提前停止。目标链 `BoundedCronCallback` 校验 Callback Proxy 和 Reactive 地址，并按序号去重。
+
+```powershell
+forge test --match-path test/BoundedCron.t.sol -vv
+```
+
+部署脚本在 `script/DeployCron.s.sol`，分为 Lasna 部署 Reactive、目标链部署 Callback、回 Lasna 设置目标并启动订阅三步。配置项为 `CRON_DESTINATION_CHAIN_ID`、`CRON_MAX_RUNS`、`CRON_REACTIVE_FUNDING_WEI`、`CRON_CALLBACK_PROXY_ADDR`、`CRON_REACTIVE_ADDR`、`CRON_CALLBACK_FUNDING_WEI` 和 `CRON_CALLBACK_ADDR`。费用分属 Lasna Reactive 执行和目标链回调；次数上限限制交易次数，不能保证网络费用不会耗尽。当前只有本地替身测试，没有部署地址或真实触发交易。

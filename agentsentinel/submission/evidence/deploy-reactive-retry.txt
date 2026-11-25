@@ -1,0 +1,40 @@
+No files changed, compilation skipped
+2026-11-25T07:30:30.556490Z  WARN foundry_evm_traces::debug::sources: failed to parse contract definitions for lib/forge-std/src/StdAssertions.sol
+2026-11-25T07:30:30.557479Z  WARN foundry_evm_traces::debug::sources: failed to parse contract definitions for lib/forge-std/src/StdError.sol
+2026-11-25T07:30:30.557680Z  WARN foundry_evm_traces::debug::sources: failed to parse contract definitions for lib/forge-std/src/StdInvariant.sol
+2026-11-25T07:30:30.559105Z  WARN foundry_evm_traces::debug::sources: failed to parse contract definitions for lib/forge-std/src/StdToml.sol
+2026-11-25T07:30:30.559543Z  WARN foundry_evm_traces::debug::sources: failed to parse contract definitions for lib/forge-std/src/Test.sol
+2026-11-25T07:30:30.564228Z  WARN foundry_evm_traces::debug::sources: failed to parse contract definitions for test/BoundedCron.t.sol
+2026-11-25T07:30:30.565756Z  WARN foundry_evm_traces::debug::sources: failed to parse contract definitions for script/DeployCron.s.sol
+2026-11-25T07:30:30.568451Z  WARN foundry_evm_traces::debug::sources: failed to parse contract definitions for test/AgentSentinel.t.sol
+2026-11-25T07:30:33.333806Z  WARN foundry_fork_db::cache: Failed to read cache file err=Os { code: 2, kind: NotFound, message: "系统找不到指定的文件。" } path="C:\\Users\\Administrator\\.foundry\\cache\\rpc\\5318007\\9200592"
+2026-11-25T07:30:39.960640Z  WARN evm::traces::external: etherscan config not found
+2026-11-25T07:30:40.200054Z  WARN evm::traces::external: could not get info err=Unknown("error decoding response body")
+2026-11-25T07:30:40.201173Z  WARN evm::traces::external: could not get info err=Unknown("error decoding response body")
+Script ran successfully.
+
+== Logs ==
+  SENTINEL_ADDR 0xAA9e4ad766f9370B693c3F0f4245FaFaE86434dB
+
+## Setting up 1 EVM.
+
+==========================
+
+Chain 5318007
+
+Estimated gas price: 200.000000001 gwei
+
+Estimated total gas used for script: 3590589
+
+Estimated amount required: 0.718117800003590589 ETH
+
+==========================
+
+
+==========================
+
+ONCHAIN EXECUTION COMPLETE & SUCCESSFUL.
+
+Transactions saved to: F:/AI/分栏/reactive-builder-camp2026/reactive-camp-2026/agentsentinel/broadcast\Deploy.s.sol\5318007\run-latest.json
+
+Sensitive values saved to: F:/AI/分栏/reactive-builder-camp2026/reactive-camp-2026/agentsentinel/cache\Deploy.s.sol\5318007\run-latest.json

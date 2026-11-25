@@ -1,0 +1,12 @@
+> forge verify-check facf704a-2ab1-4386-8dde-d858dab3da6e --verifier sourcify --chain 11155111
+AgentRegistry: Checking verification status on sepolia Attempting to verify on Sourcify. Pass the --etherscan-api-key <API_KEY> to verify on Etherscan, or use the --verifier flag to verify on another provider. Contract successfully verified: Status: `exact_match`
+> forge verify-check 26d67ae3-e7fb-4b57-b346-96f71c6ff030 --verifier sourcify --chain 11155111
+CapabilityRegistry: Checking verification status on sepolia Attempting to verify on Sourcify. Pass the --etherscan-api-key <API_KEY> to verify on Etherscan, or use the --verifier flag to verify on another provider. Contract successfully verified: Status: `exact_match`
+> forge verify-check 9fa305f6-cb1d-4d83-982a-b11e8df84982 --verifier sourcify --chain 11155111
+AccountabilityVault: Checking verification status on sepolia Attempting to verify on Sourcify. Pass the --etherscan-api-key <API_KEY> to verify on Etherscan, or use the --verifier flag to verify on another provider. Contract successfully verified: Status: `exact_match`
+> forge verify-check b85f3999-0d2f-4021-9851-4f56c75e57f0 --verifier sourcify --chain 11155111
+SentinelExecutor: Checking verification status on sepolia Attempting to verify on Sourcify. Pass the --etherscan-api-key <API_KEY> to verify on Etherscan, or use the --verifier flag to verify on another provider. Contract successfully verified: Status: `exact_match`
+> forge verify-check 555316b8-1eed-4688-adbf-ad64c56207f6 --verifier sourcify --chain 11155111
+SentinelCallbackTarget: Checking verification status on sepolia Attempting to verify on Sourcify. Pass the --etherscan-api-key <API_KEY> to verify on Etherscan, or use the --verifier flag to verify on another provider. Contract successfully verified: Status: `exact_match`
+> forge verify-check e12722be-a1be-4f86-97cf-9b5cd9330150 --verifier sourcify --chain 5318007
+AgentSentinel: Checking verification status on 5318007 Attempting to verify on Sourcify. Pass the --etherscan-api-key <API_KEY> to verify on Etherscan, or use the --verifier flag to verify on another provider. Contract successfully verified: Status: `exact_match`

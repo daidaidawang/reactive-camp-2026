@@ -6,12 +6,13 @@
 
 - 项目：AgentSentinel：受限付款与可核对的跨链处置
 - 赛道：Track 3 — Reactive Meets AI
-- 讲述时长：2 分 50 秒，为 3 分钟限制留出 10 秒余量
+- [实际演示视频](../agentsentinel/submission/AgentSentinel-3min-Demo.mp4)：2 分 08 秒，中文配音、真实命令和浏览器截图
+- [可编辑 PPT](../agentsentinel/submission/AgentSentinel-Demo-Day.pptx)：8 页，讲者备注附逐页讲词
+- [部署与交易截图](../agentsentinel/submission/README.md)：Sepolia / Lasna 地址、交易哈希和状态读回
 - 任务要求：3 分钟展示、2 分钟问答；提交证明可用演示截图或幻灯片链接
-- 幻灯片和逐页讲词：[AgentSentinel Demo Day 演示稿](../agentsentinel/docs/demo-day-slides.md)
 - 项目源码和运行细节：[AgentSentinel README](../agentsentinel/README.md)
 
-## 完整讲述稿
+## 备用现场讲述稿
 
 **0:00–0:25｜开场**
 
@@ -31,9 +32,9 @@
 
 **2:20–2:50｜保护、结果与限制**
 
-“实现还覆盖指定来源过滤、事件与回调幂等、单笔上限和所有 Agent 共用的累计支出上限。回调失败时保证金继续锁定，可在修复费用或配置后按规则重试。最新版本地 Foundry 34 项、Node.js 12 项测试通过；测试里的 SYSTEM 和 Callback Proxy 是替身，因此这些数字是本地验证，不是实链证明。本项目目前只保护进入 Executor 的 ETH 和固定商户，尚未完成最新版测试网部署，也没有真实模型调用。谢谢。”
+“实现还覆盖指定来源过滤、事件与回调幂等、单笔上限和所有 Agent 共用的累计支出上限。回调失败时保证金继续锁定，可在修复费用或配置后按规则重试。最新版 Foundry 34 项、Node.js 12 项测试通过；真实测试网的源链、Lasna 和目标链三段交易也已经用同一回执核对。本项目目前只保护进入 Executor 的 ETH 和固定商户，没有真实模型调用。谢谢。”
 
-上述口播约 350 字，按正常讲解速度约 2 分 40 秒至 2 分 50 秒。实际录制时以计时结果为准，超过 3 分钟就删减停顿和技术细节，不压缩证据边界说明。
+这份现场讲述稿与已导出的 2 分 08 秒视频不逐字相同；视频以 PPT 讲者备注、链上截图和配音为准。
 
 ## 两分钟问答答词
 
@@ -56,6 +57,6 @@
 “不能。当前只有进入 Executor 的 ETH 采购和固定商户受到约束，没有接管 Safe、EOA、DEX 或任意 ERC-20，也没有完成多目的链权限同步。”
 
 **问：有真实链上演示和审计吗？**
-“这个最新版本还没有重新部署测试网，也没有第三方审计。我们能提供的是公开源码和可复现的本地测试；不把旧版本交易或替身测试说成新版链上证据。”
+“最新版本已在 Sepolia 与 Reactive Lasna 重新部署。可以用回执 2 关联源链超额请求、Lasna reaction 和 Sepolia 回调，并读到 `processed=true` 与 `settled=true`。没有第三方审计，也没有真实 LLM 调用。”
 
 日期：2026-11-25

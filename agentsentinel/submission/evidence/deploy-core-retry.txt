@@ -1,0 +1,39 @@
+No files changed, compilation skipped
+2026-11-25T07:26:26.148309Z  WARN foundry_evm_traces::debug::sources: failed to parse contract definitions for lib/forge-std/src/StdAssertions.sol
+2026-11-25T07:26:26.149279Z  WARN foundry_evm_traces::debug::sources: failed to parse contract definitions for lib/forge-std/src/StdError.sol
+2026-11-25T07:26:26.149699Z  WARN foundry_evm_traces::debug::sources: failed to parse contract definitions for lib/forge-std/src/StdInvariant.sol
+2026-11-25T07:26:26.151046Z  WARN foundry_evm_traces::debug::sources: failed to parse contract definitions for lib/forge-std/src/StdToml.sol
+2026-11-25T07:26:26.151373Z  WARN foundry_evm_traces::debug::sources: failed to parse contract definitions for lib/forge-std/src/Test.sol
+2026-11-25T07:26:26.155340Z  WARN foundry_evm_traces::debug::sources: failed to parse contract definitions for test/BoundedCron.t.sol
+2026-11-25T07:26:26.156392Z  WARN foundry_evm_traces::debug::sources: failed to parse contract definitions for script/DeployCron.s.sol
+2026-11-25T07:26:26.158642Z  WARN foundry_evm_traces::debug::sources: failed to parse contract definitions for test/AgentSentinel.t.sol
+2026-11-25T07:26:27.068123Z  WARN foundry_fork_db::cache: Failed to read cache file err=Os { code: 2, kind: NotFound, message: "系统找不到指定的文件。" } path="C:\\Users\\Administrator\\.foundry\\cache\\rpc\\sepolia\\12208085"
+2026-11-25T07:26:29.378997Z  WARN evm::traces::external: etherscan config not found
+Script ran successfully.
+
+== Logs ==
+  REGISTRY_ADDR 0xbde5F8cd8a44e002745aAe7b17356B32DAFa8400
+  CAPABILITY_ADDR 0xe29aC90eCf7D28D972Face09d77d74EcF351A3e5
+  VAULT_ADDR 0xe2E5738697cB8a17e018868460B8F8A0a3621c17
+  EXECUTOR_ADDR 0x3BdF77755307dE44625A8A0d1bC6b05B6Ee62476
+
+## Setting up 1 EVM.
+
+==========================
+
+Chain 11155111
+
+Estimated gas price: 0.000000034 gwei
+
+Estimated total gas used for script: 6653728
+
+Estimated amount required: 0.000000000226226752 ETH
+
+==========================
+2026-11-25T07:26:39.149745Z  WARN forge_script::progress: Transaction Failure tx_hash=0xd525822279cc4dbbd4aff9df25a4cb109461bddc3848e646f955ffd8fb5a4a3d
+
+Transactions saved to: F:/AI/分栏/reactive-builder-camp2026/reactive-camp-2026/agentsentinel/broadcast\Deploy.s.sol\11155111\run-latest.json
+
+Sensitive values saved to: F:/AI/分栏/reactive-builder-camp2026/reactive-camp-2026/agentsentinel/cache\Deploy.s.sol\11155111\run-latest.json
+
+Error: Transaction Failure: 0xd525822279cc4dbbd4aff9df25a4cb109461bddc3848e646f955ffd8fb5a4a3d

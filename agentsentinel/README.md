@@ -4,7 +4,7 @@
 
 Agent 使用项目方预存的 ETH 向一个固定商户下单。合约检查身份、保证金、授权有效期和单笔额度；超额请求不付款，但留下回执并锁定保证金。Reactive 订阅风险事件，回调源链完成撤权、保证金罚没和身份吊销。AI 可解释这份证据，不能决定是否放过确定性超额。
 
-当前是本地验证过的黑客松原型。本次修改没有重新部署测试网，也没有调用真实 LLM。旧 `deploy_sepolia_core.txt` 不代表这个版本已经部署。
+当前版本已于 2026-11-25 在 Sepolia（源链/目标链）与 Reactive Lasna（反应链）部署，并完成一笔正常订单和一笔超额订单的真实链上演示。同一 `receiptId=2` 的源链事件、Lasna reaction 与 Sepolia 回调均已确认；六个合约经 Sourcify 检查为 `exact_match`，没有调用真实 LLM。旧 `deploy_sepolia_core.txt` 仍是旧版本记录，以[本次链上证据](submission/README.md)为准。
 
 ## 实际流程
 
@@ -52,12 +52,12 @@ sequenceDiagram
 
 累计金额按已经分配给商户的 ETH 计数，领取、充值和重新授权不重置；达到总上限后不能靠充值继续花费。总限额从部署参数 `TOTAL_SPEND_LIMIT_WEI` 读取，单位 wei。
 
-提交材料：[测试代码](test/AgentSentinel.t.sol)、[forge test 截图](docs/evidence/forge-test.jpg)、[测试输出](docs/evidence/forge-test.txt)。当前运行结果为 Foundry 34 passed、0 failed（AgentSentinel 28 项、Bounded Cron 6 项），Node.js 12 passed、0 failed；系统和代理使用测试替身，未广播实网交易。现有截图只覆盖 AgentSentinel 主套件，完整 34 项以全套最新输出为准。
+提交材料：[测试代码](test/AgentSentinel.t.sol)、[forge test 全套截图](submission/screenshots/command-tests.png)、[完整输出](submission/evidence/forge-test-2026-11-25.txt)。当前运行结果为 Foundry 34 passed、0 failed（AgentSentinel 28 项、Bounded Cron 6 项），Node.js 12 passed、0 failed。本地测试的 SYSTEM 和代理是替身；真实跨链执行另见[公开链交易与状态读回](submission/README.md)。
 
 需要 Foundry 和 Node.js 22+，不需要 npm 安装。编译器固定为 Solidity 0.8.35，EVM 目标为 Cancun。
 
 ```powershell
-cd 'F:\AI\分栏\reactive-builder-camp2026\agentsentinel'
+cd 'F:\AI\分栏\reactive-builder-camp2026\reactive-camp-2026\agentsentinel'
 forge test -vv
 node --test scripts/ai-verdict.test.js
 forge test --match-test testEndToEndFromActualEventAndMerchantPayment -vvvv
@@ -99,9 +99,9 @@ node scripts/ai-verdict.js --submit
 
 ## 部署和演示
 
-新版本改变了构造参数和状态布局，不能复用旧部署。按 [部署与演示](docs/部署与演示.md) 分别部署源链、Reactive 合约和回调，再连接角色。这里只提供可检查脚本，不默认广播。
+新版本改变了构造参数和状态布局，不能复用旧部署。本次按[部署与演示](docs/部署与演示.md)中的四步在测试网重新部署；实际地址、交易哈希、截图和视频见[本次交付](submission/README.md)。脚本默认不广播，需要显式 `--broadcast`。
 
-黑客松材料：[完整提交材料](../notes/提交包：可以直接交给黑客松的材料.md)、[Demo Day 完整口播与问答](../notes/Demo%20Day%20展示.md)、[演示幻灯片](docs/demo-day-slides.md)。新版尚未部署，地址、三笔链上交易和演示视频需要实际演示后补齐。发布审查记录见[发布准备与缺口审查](docs/发布准备与缺口审查.md)。
+黑客松材料：[2 分 08 秒演示视频](submission/AgentSentinel-3min-Demo.mp4)、[可编辑 PPT](submission/AgentSentinel-Demo-Day.pptx)、[完整截图与交易清单](submission/README.md)、[提交包任务笔记](../notes/提交包：可以直接交给黑客松的材料.md)、[Demo Day 问答](../notes/Demo%20Day%20展示.md)。发布审查记录见[发布准备与缺口审查](docs/发布准备与缺口审查.md)。
 
 ## 出问题怎么办
 

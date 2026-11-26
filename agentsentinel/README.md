@@ -4,7 +4,7 @@
 
 Agent 使用项目方预存的 ETH 向一个固定商户下单。合约检查身份、保证金、授权有效期和单笔额度；超额请求不付款，但留下回执并锁定保证金。Reactive 订阅风险事件，回调源链完成撤权、保证金罚没和身份吊销。AI 可解释这份证据，不能决定是否放过确定性超额。
 
-当前版本已于 2026-11-25 在 Sepolia（源链/目标链）与 Reactive Lasna（反应链）部署，并完成一笔正常订单和一笔超额订单的真实链上演示。同一 `receiptId=2` 的源链事件、Lasna reaction 与 Sepolia 回调均已确认；六个合约经 Sourcify 检查为 `exact_match`，没有调用真实 LLM。旧 `deploy_sepolia_core.txt` 仍是旧版本记录，以[本次链上证据](submission/README.md)为准。
+当前版本已于 2026-11-25 在 Sepolia（源链/目标链）与 Reactive Lasna（反应链）部署，并完成一笔正常订单和一笔超额订单的真实链上演示。同一 `receiptId=2` 的 [Sepolia 源交易](https://eth-sepolia.blockscout.com/tx/0xed54f19864303d97f5d4693f1896e9728e292530708591af35904c9f40e1acdf)、[Lasna reaction](https://lasna.reactscan.net/tx/0x84a8845d27e84d4c81c522e779090f496b729d94350732c1dcaea75bfe7fcab7)与 [Sepolia 目标回调](https://eth-sepolia.blockscout.com/tx/0x2b06737bdbc1fe40a1c00a295afee165b2c76510964819b9e1474d28a218db12)均已确认；六个合约经 Sourcify 检查为 `exact_match`，没有调用真实 LLM。旧 `deploy_sepolia_core.txt` 仍是旧版本记录，不能代表这次部署。
 
 ## 实际流程
 
@@ -52,7 +52,7 @@ sequenceDiagram
 
 累计金额按已经分配给商户的 ETH 计数，领取、充值和重新授权不重置；达到总上限后不能靠充值继续花费。总限额从部署参数 `TOTAL_SPEND_LIMIT_WEI` 读取，单位 wei。
 
-提交材料：[测试代码](test/AgentSentinel.t.sol)、[forge test 全套截图](submission/screenshots/command-tests.png)、[完整输出](submission/evidence/forge-test-2026-11-25.txt)。当前运行结果为 Foundry 34 passed、0 failed（AgentSentinel 28 项、Bounded Cron 6 项），Node.js 12 passed、0 failed。本地测试的 SYSTEM 和代理是替身；真实跨链执行另见[公开链交易与状态读回](submission/README.md)。
+测试代码：[AgentSentinel](test/AgentSentinel.t.sol)、[Bounded Cron](test/BoundedCron.t.sol)。2026-11-25 本地运行结果为 Foundry 34 passed、0 failed（AgentSentinel 28 项、Bounded Cron 6 项），Node.js 12 passed、0 failed。本地测试的 SYSTEM 和代理是替身；真实跨链执行由上面的三笔公开交易及链上状态核对。
 
 需要 Foundry 和 Node.js 22+，不需要 npm 安装。编译器固定为 Solidity 0.8.35，EVM 目标为 Cancun。
 
@@ -99,9 +99,9 @@ node scripts/ai-verdict.js --submit
 
 ## 部署和演示
 
-新版本改变了构造参数和状态布局，不能复用旧部署。本次按[部署与演示](docs/部署与演示.md)中的四步在测试网重新部署；实际地址、交易哈希、截图和视频见[本次交付](submission/README.md)。脚本默认不广播，需要显式 `--broadcast`。
+新版本改变了构造参数和状态布局，不能复用旧部署。本次按[部署与演示](docs/部署与演示.md)中的四步在测试网重新部署；主要合约地址为 Sepolia [Executor](https://eth-sepolia.blockscout.com/address/0xB6Daf06E3D65008430ac9F2E3ca5F402134844A1)、Lasna [Sentinel](https://lasna.reactscan.net/address/0xAA9e4ad766f9370B693c3F0f4245FaFaE86434dB)、Sepolia [Callback](https://eth-sepolia.blockscout.com/address/0x1A4DCB8DFEa162ed09C5a3Be1A6275F404a62384)。脚本默认不广播，需要显式 `--broadcast`。
 
-黑客松材料：[2 分 08 秒演示视频](submission/AgentSentinel-3min-Demo.mp4)、[可编辑 PPT](submission/AgentSentinel-Demo-Day.pptx)、[完整截图与交易清单](submission/README.md)、[提交包任务笔记](../notes/提交包：可以直接交给黑客松的材料.md)、[Demo Day 问答](../notes/Demo%20Day%20展示.md)。发布审查记录见[发布准备与缺口审查](docs/发布准备与缺口审查.md)。
+部署过程、实链结果和剩余限制见[发布准备与缺口审查](docs/发布准备与缺口审查.md)。
 
 ## 出问题怎么办
 

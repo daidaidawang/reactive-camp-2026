@@ -18,8 +18,6 @@ Reactive Omni 学习和实验仓库。AgentSentinel 当前原型在 `agentsentin
 - `agentsentinel/`：AgentSentinel 合约和判读服务
 - `agentsentinel/README.md`：AgentSentinel 的能力边界、部署授权顺序和链下服务配置
 - `agentsentinel/docs/发布准备与缺口审查.md`：部署前安全检查、修复项和剩余阻断
-- `notes/提交包：可以直接交给黑客松的材料.md`：提交清单与证据状态
-- `notes/Demo Day 展示.md`：三分钟演示方案
 
 ## 网络参数
 
@@ -38,14 +36,8 @@ Lasna SYSTEM：`0x8888888888888888888888888888888888888888`
 
 私钥和 RPC 凭证放在本地 `.env` 文件中，不提交到仓库。
 
-## 黑客松交付
+## AgentSentinel 验证
 
-- [提交包：可以直接交给黑客松的材料](notes/提交包：可以直接交给黑客松的材料.md)
-- [Demo Day 展示](notes/Demo%20Day%20展示.md)
-- [AgentSentinel 演示幻灯片](agentsentinel/docs/demo-day-slides.md)
+- [合约与 Foundry 测试](agentsentinel/test/AgentSentinel.t.sol)
 - [发布准备与缺口审查](agentsentinel/docs/发布准备与缺口审查.md)
-
-
-
-
 
